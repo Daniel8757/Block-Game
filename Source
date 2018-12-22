@@ -1,0 +1,338 @@
+#This is a recreation of the "world's hardest game"
+#The user must navigate a block outside a maze
+#If the user touches another block, the cordinates of the block are reset
+#There are two level, and the game automatically goes the the next level if the previous is beaten
+#Part of the difficulty is to figure out what block you are
+
+import keyboard # Importing modules
+from turtle import*
+import turtle
+import time
+screen = Screen()
+
+def level1(): # Level one
+    def square(x,y): # Function to make a square
+        layer1.up()
+        layer1.goto(x-5,y-5)
+        layer1.down()
+        layer1.goto(x+5,y-5)
+        layer1.goto(x+5,y+5)
+        layer1.goto(x-5,y+5)
+        layer1.goto(x-5,y-5)
+
+    walls = Turtle() # Maze walls cordinates
+    walls.up()
+    walls.speed(0)
+    walls.goto(-400, 200)
+    walls.down()
+    walls.goto(-400, -200)
+    walls.goto(300, -200)
+    walls.goto(300, -300)
+    walls.up()
+    walls.goto(350, -300)
+    walls.down()
+    walls.goto(350, 0)
+    walls.goto(-320, 0)
+    walls.goto(-320, 200)
+    walls.goto(-400,200)
+    walls.hideturtle()
+
+    wallLefty1 = [200, -200] # Defines wall where you can't go past left
+    wallLefty2 = [-200, -300]
+    wallLeftx = [-400, 300]
+
+    wallRighty1 = [200,0] # Wall where you can't go past right
+    wallRighty2 = [0,-300]
+    wallRightx = [-320,350]
+
+    wallTopx1 = [-400,-320] #Wall where you can't go above
+    wallTopx2 = [-320,350]
+    wallTopy = [200,0]
+
+    wallBottomx1 = [-400] # Wall where you can't go bellow
+    wallBottomx2 = [300]
+    wallBottomy = [-200]
+
+    evilx1 = 150 # Variables for evil block
+    evily1 = -10
+    evilsquare1 = True #Defines where it moves
+
+    layer1 = Turtle()#Makes another layer for the user
+    layer1.speed(0)
+    layer1.hideturtle()
+    square(50,50)
+
+    x = -360
+    y = 160
+
+    up = False # Variables for deciding whether the user can move in a certain direction or not
+    down = False
+    left = False
+    right = False
+
+    layer1.clear() #Clears everything
+
+    while True:
+        if keyboard.is_pressed('w'): #Checks what key the user presses
+            up = True
+        elif keyboard.is_pressed('s'):
+            down= True
+        if keyboard.is_pressed('a'):
+            left = True
+        elif keyboard.is_pressed('d'):
+            right = True
+
+        for i in range(len(wallLefty1)): # Checks if the user is in a wall to the left
+            if x == wallLeftx[i] and y <= wallLefty1[i] and y >= wallLefty2[i]:
+                left = False
+                break
+
+        for i in range(len(wallRighty1)): #Checks if the user is in a wall to the right
+            if x == wallRightx[i] and y <= wallRighty1[i] and y >= wallRighty2[i]:
+                right = False
+                break
+
+        for i in range(len(wallTopx1)): #Checks if the user is in a wall to the top
+            if y == wallTopy[i] and x >= wallTopx1[i] and x <= wallTopx2[i]:
+                up = False
+                break
+            
+        if y == wallBottomy[0] and x >= wallBottomx1[0] and x <= wallBottomx2[0]: #Checks if the user is in a wall to the bottom
+            down = False
+
+        if up: # Goes in a certain direction depending on the wasd keys
+            y += 5
+        elif down:
+            y -= 5
+        if left:
+            x -= 5
+        elif right:
+            x += 5
+
+        layer1.clear()
+        square(x,y)
+
+        if evily1 <= -200: #Checks what direction the evil block should go in
+            evilsquare1 = False
+        elif evily1 >= 0:
+            evilsquare1 = True
+
+        if evilsquare1: # Makes the evil block move
+            evily1 -= 10
+        else:
+            evily1 += 10
+
+
+        square(evilx1, evily1)
+        
+        if (x == evilx1+5 or x == evilx1 or x ==evilx1-5) and (y == evily1+5 or y == evily1 or y == evily1-5): #Checks if user is by the evil block
+            x = -360 #Resets variables
+            y = 160
+
+        up = False #Resets movement variables
+        down = False
+        left = False
+        right = False
+
+        time.sleep(0.01) # Small delay
+        if(y<-300): # If the user completes the maze, the user goes to the next level
+            walls.clear()
+            layer1.clear()
+            break
+        
+def level2():
+    def square(x,y): #Variable to make blocks
+        layer1.up()
+        layer1.goto(x-5,y-5)
+        layer1.down()
+        layer1.goto(x+5,y-5)
+        layer1.goto(x+5,y+5)
+        layer1.goto(x-5,y+5)
+        layer1.goto(x-5,y-5)
+
+    walls = Turtle()
+    walls.up()
+    walls.speed(0)
+
+    #The walls
+    walls.goto(-400, 200)
+    walls.down()
+    walls.goto(-400, -200)
+    walls.goto(-100, -200)
+    walls.goto(-100, 0)
+    walls.goto(50,0)
+    walls.goto(50, -200)
+    walls.goto(350, -200)
+    walls.goto(350, -300)
+    walls.up()
+    walls.goto(400, -300)
+    walls.down()
+    walls.goto(400, 200)
+    walls.goto(0, 200)
+    walls.goto(0, 100)
+    walls.goto(-350, 100)
+    walls.goto(-350, 200)
+    walls.goto(-400,200)
+    walls.hideturtle()
+
+    #Defines where the user can pass and can't pass
+    wallLefty1 = [200, 200, 0, -200]
+    wallLefty2 = [-200, 100, -200, -300]
+    wallLeftx = [-400, 0, 50, 350]
+
+    wallRighty1 = [200, 0, 200]
+    wallRighty2 = [100, -200, -300]
+    wallRightx = [-350, -100, 400]
+
+    wallTopx1 = [-400, -350, 0]
+    wallTopx2 = [-350, 0, 400]
+    wallTopy = [200, 100, 200]
+
+    wallBottomx1 = [-400, -100, 50]
+    wallBottomx2 = [-100, 50, 350]
+    wallBottomy = [-200, 0, -200]
+
+    #Defines another layer for the block
+    layer1 = Turtle()
+    layer1.speed(0)
+    layer1.hideturtle()
+    square(50,50)
+
+    x = -360
+    y = 160
+
+    #Defines the evil squares
+    evilx1 = -400
+    evily1 = 50
+    evilsquare1 = True
+
+    evilx2 = -300
+    evily2 = 100
+    evilsquare2 = True
+
+    evilx3 = 200
+    evily3 = 200
+    evilsquare3 = True
+
+    #Variables for where user can move
+    up = False
+    down = False
+    left = False
+    right = False
+
+    layer1.clear()
+
+    while True:
+
+        #Checks what key the user presses
+        if keyboard.is_pressed('w'):
+            up = True
+        elif keyboard.is_pressed('s'):
+            down= True
+        if keyboard.is_pressed('a'):
+            left = True
+        elif keyboard.is_pressed('d'):
+            right = True
+
+        #Checks if the user is by a certain wall
+        for i in range(len(wallLefty1)):
+            if x == wallLeftx[i] and y <= wallLefty1[i] and y >= wallLefty2[i]:
+                left = False
+                break
+
+        for i in range(len(wallRighty1)):
+            if x == wallRightx[i] and y <= wallRighty1[i] and y >= wallRighty2[i]:
+                right = False
+                break
+
+        for i in range(len(wallTopx1)):
+            if y == wallTopy[i] and x >= wallTopx1[i] and x <= wallTopx2[i]:
+                up = False
+                break
+        
+        for i in range(len(wallBottomy)):
+            if y == wallBottomy[i] and x >= wallBottomx1[i] and x <= wallBottomx2[i]:
+                down = False
+                break
+
+        
+        #Moves the block
+        if up:
+            y += 5
+        elif down:
+            y -= 5
+        if left:
+            x -= 5
+        elif right:
+            x += 5
+
+        #Draws the sqyare
+        layer1.clear()
+        square(x,y)
+
+        #Checks how the evil squares move
+        if evilx1 >= 400:
+            evilsquare1 = False
+        elif evilx1 <= -400:
+            evilsquare1 = True
+
+        if evily2 <= -200:
+            evilsquare2 = False
+        elif evily2 >= 100:
+            evilsquare2 = True
+
+        if evily3 <= -200:
+            evilsquare3 = False
+        elif evily3 >= 200:
+            evilsquare3 = True
+
+        #Moves the evil squares
+        if evilsquare1:
+            evilx1 += 10
+        else:
+            evilx1 -= 10
+
+        if evilsquare2:
+            evily2 -= 10
+        else:
+            evily2 += 10
+
+        if evilsquare3:
+            evily3 -= 10
+        else:
+            evily3 += 10
+
+        #Draws the evil squares
+        square(evilx1, evily1)
+        square(evilx2, evily2)
+        square(evilx3, evily3)
+
+        #Checks if the user is around dan evil block, and if it is it resets the user's position
+        if (x == evilx1+5 or x == evilx1 or x ==evilx1-5) and (y == evily1+5 or y == evily1 or y == evily1-5):
+            x = -360
+            y = 160
+
+        if (x == evilx2+5 or x == evilx2 or x ==evilx2-5) and (y == evily2+5 or y == evily2 or y == evily2-5):
+            x = -360
+            y = 160
+
+        if (x == evilx3+5 or x == evilx3 or x == evilx3-5) and (y == evily3+5 or y == evily3 or y == evily3-5):
+            x = -360
+            y = 160
+
+        #Resets movement
+        up = False
+        down = False
+        left = False
+        right = False
+
+        time.sleep(0.01)
+
+        #If the user wins, the game ends
+        if y<-300:
+            break
+
+#Runs level 1, then level 2 when level 1 is done, then prints you win the game when you finish all
+level1()
+level2()
+print("You win the game!")
